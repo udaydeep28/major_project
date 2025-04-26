@@ -1,0 +1,94 @@
+body {
+  font-family: "Roboto", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+}
+
+.navbar {
+  padding: 0 20px;
+  height: 5rem;
+  background-color: white;
+}
+i {
+  color: #fe424d;
+  font-size: 2rem;
+}
+.nav-link {
+  color: #222222;
+  font-weight: 400;
+}
+
+/* footer */
+
+footer {
+  background-color: #ebebeb;
+}
+.links,
+.footer-copy,
+.icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-top: 5px;
+}
+.icons i {
+  color: #222222;
+}
+.links {
+  padding-top: 13px;
+}
+.links a {
+  text-decoration: none;
+  color: #222222;
+}
+
+/* listings */
+.card {
+  margin-top: 20px;
+  border: none;
+}
+
+.card-border {
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.card-img-top {
+  border-radius: 20px;
+  width: 100%;
+  object-fit: cover;
+}
+.data {
+  text-decoration: none;
+  color: #222222;
+}
+.card-img-overlay {
+  opacity: 0;
+}
+.card-img-overlay:hover {
+  opacity: 0.3;
+  background-color: white;
+}
+
+button {
+  border: none;
+  background-color: #fe424d;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+/* show */
+.buttons-mul {
+  display: flex;
+  gap: 10px;
+}
+.black {
+  background-color: #222222;
+  color: #ebebeb;
+}

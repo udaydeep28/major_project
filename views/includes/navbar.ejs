@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/home"
+      ><i class="fa-solid fa-earth-americas"></i>
+      <span class="text-danger align-middle">Tariff.X</span></a
+    >
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav ms-auto mt-3">
+        <a
+          class="nav-link"
+          href="/"
+          style="transition: color 0.3s; text-decoration: none"
+          onmouseover="this.style.color='red'; this.style.textDecoration='underline';"
+          onmouseout="this.style.color=''; this.style.textDecoration='none';"
+          >Home</a
+        >
+        <a
+          class="nav-link"
+          href="/listings"
+          style="transition: color 0.3s; text-decoration: none"
+          onmouseover="this.style.color='red'; this.style.textDecoration='underline';"
+          onmouseout="this.style.color=''; this.style.textDecoration='none';"
+          >All Listings</a
+        >
+        <a
+          class="nav-link"
+          href="/listings/new"
+          style="transition: color 0.3s; text-decoration: none"
+          onmouseover="this.style.color='red'; this.style.textDecoration='underline';"
+          onmouseout="this.style.color=''; this.style.textDecoration='none';"
+          >Add new Listing</a
+        >
+      </div>
+      <div class="navbar-nav ms-auto mt-3">
+        <% if (!currentUser) { %>
+        <button
+          class="btn btn-danger nav-link"
+          onclick="window.location.href='/signup'"
+        >
+          <strong>Sign up</strong>
+        </button>
+        <a class="nav-link" href="/login"><strong>Log in</strong></a>
+        <% } %> <% if (currentUser) { %>
+        <b><a class="nav-link" href="/logout">Log out</a></b>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
