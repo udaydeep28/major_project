@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: "Roboto", sans-serif;
   min-height: 100vh;
   display: flex;
@@ -7,7 +7,7 @@ body {
 
 .container {
   flex: 1;
-}
+} */
 
 .navbar {
   padding: 0 20px;
@@ -54,10 +54,10 @@ footer {
   border: none;
 }
 
-.card-border {
+/* .card-border {
   border: 1px solid black;
   border-radius: 10px;
-}
+} */
 
 .card-img-top {
   border-radius: 20px;
@@ -76,19 +76,128 @@ footer {
   background-color: white;
 }
 
-button {
+/* button {
   border: none;
   background-color: #fe424d;
   padding: 10px 12px;
   border-radius: 10px;
-}
+} */
 
 /* show */
-.buttons-mul {
+/* .buttons-mul {
   display: flex;
   gap: 10px;
 }
 .black {
   background-color: #222222;
   color: #ebebeb;
+}
+*/
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f4f4f9;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.card {
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-img-top {
+  height: 15rem;
+  object-fit: cover;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.card-body {
+  font-size: 1rem;
+  color: #555;
+  padding: 20px;
+}
+
+.buttons-mul button {
+  border-radius: 8px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.buttons-mul button.black {
+  background-color: #e74c3c;
+}
+
+.buttons-mul button:hover {
+  opacity: 0.8;
+}
+
+.form-control {
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+/* .starability-slot input[type="radio"] {
+  display: none;
+}
+
+.starability-slot label {
+  font-size: 1.5rem;
+  color: #f0ad4e;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.starability-result {
+  font-size: 1.5rem;
+  color: #f0ad4e;
+} */
+
+.invalid-feedback {
+  color: #dc3545;
+}
+
+#map {
+  border-radius: 12px;
+  height: 400px;
+  /* width: 100%; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+.card-subtitle {
+  font-weight: 400;
+  font-size: 1.2rem;
+}
+
+.card-body .black {
+  background-color: #e74c3c;
 }

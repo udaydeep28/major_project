@@ -1,5 +1,37 @@
 <% layout("/layouts/boilerplate.ejs") %>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const locationName =
+      "<%= listing.location || listing.country || 'India' %>";
 
+    const map = L.map("map").setView([20.5937, 78.9629], 5); // Default to India
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        locationName
+      )}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          const lat = data[0].lat;
+          const lon = data[0].lon;
+          map.setView([lat, lon], 13);
+          L.marker([lat, lon]).addTo(map).bindPopup(locationName).openPopup();
+        } else {
+          alert("Could not find location. Showing default view.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error loading map location:", err);
+      });
+  });
+</script>
 <body>
   <div class="row mt-3">
     <div class="col-8 offset-2">
@@ -9,28 +41,125 @@
           src="<%= listing.image.url %>"
           class="card-img-top"
           alt="listing image"
-          style="height: 15rem"
+          style="height: 15rem; object-fit: cover"
         />
         <div class="card-body">
-          Owned by <em><%= listing.owner.username%></em> <br /><br />
-          <%= listing.description %>
-          <br />
-          &#8377; <%= listing.price.toLocaleString("en-IN") %>
-          <br />
-          <%= listing.location %>
-          <br />
-          <%= listing.country %>
+          <p>Owned by <em><%= listing.owner.username %></em></p>
+          <p><%= listing.description %></p>
+          <p>&#8377; <%= listing.price.toLocaleString("en-IN") %></p>
+          <p><%= listing.location %></p>
+          <p><%= listing.country %></p>
         </div>
       </div>
+
       <% if (currentUser && currentUser._id.equals(listing.owner._id)) { %>
       <div class="buttons-mul mb-3">
-        <a href="/listings/<%= listing._id %>/edit"><button>Edit</button></a>
-        <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
+        <a href="/listings/<%= listing._id %>/edit">
+          <button>Edit</button>
+        </a>
+        <form
+          method="POST"
+          action="/listings/<%= listing._id %>?_method=DELETE"
+        >
           <button class="black">Delete</button>
         </form>
       </div>
       <% } %>
     </div>
+
+    <div class="col-8 offset-2 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Payment Details</h5>
+
+          <div class="mb-3">
+            <label for="checkIn" class="form-label">Select Check-in Date</label>
+            <input
+              type="date"
+              class="form-control"
+              id="checkIn"
+              required
+              min="<%= new Date().toISOString().split('T')[0] %>"
+              onchange="calculateTotalPrice()"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="checkOut" class="form-label"
+              >Select Check-out Date</label
+            >
+            <input
+              type="date"
+              class="form-control"
+              id="checkOut"
+              required
+              min="<%= new Date().toISOString().split('T')[0] %>"
+              onchange="calculateTotalPrice()"
+            />
+          </div>
+          <div class="mb-4" id="priceDisplay" style="display: none">
+            <h6 class="card-subtitle mb-2 text-muted">
+              Total Price: ₹<span id="totalPrice"
+                ><%= listing.price.toLocaleString("en-IN") %></span
+              >
+            </h6>
+          </div>
+
+          <button
+            class="btn btn-success w-sm-75 w-md-50 w-lg-25"
+            onclick="redirectToCheckout()"
+          >
+            Book & Pay ₹<span id="buttonPrice"
+              ><%= listing.price.toLocaleString("en-IN") %></span
+            >
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      const basePrice = Number("<%= listing.price %>");
+      const userEmail = "<%= currentUser?.email || 'guest@example.com' %>";
+      const hotelName = "<%= listing.title %>";
+
+      function calculateTotalPrice() {
+        const checkIn = new Date(document.getElementById("checkIn").value);
+        const checkOut = new Date(document.getElementById("checkOut").value);
+        const priceDisplay = document.getElementById("priceDisplay");
+
+        if (checkIn && checkOut && checkOut > checkIn) {
+          const diffDays = Math.ceil(
+            (checkOut - checkIn) / (1000 * 60 * 60 * 24)
+          );
+          const totalPrice = basePrice * diffDays;
+
+          document.getElementById("totalPrice").textContent =
+            totalPrice.toLocaleString("en-IN");
+          document.getElementById("buttonPrice").textContent =
+            totalPrice.toLocaleString("en-IN");
+          priceDisplay.style.display = "block";
+          return totalPrice;
+        }
+        priceDisplay.style.display = "none";
+        return basePrice;
+      }
+
+      function redirectToCheckout() {
+        const checkIn = document.getElementById("checkIn").value;
+        const checkOut = document.getElementById("checkOut").value;
+
+        if (!checkIn || !checkOut) {
+          alert("Please select both dates before proceeding.");
+          return;
+        }
+
+        const totalPrice = calculateTotalPrice();
+        const customNote = `Hotel:${hotelName},Price:${totalPrice},Checkin:${checkIn},Checkout:${checkOut}`;
+        const lemonUrl = `https://tariffx.lemonsqueezy.com/buy/f63e2a22-903a-4140-88b5-e4df98dc34a9?checkout[email]=${encodeURIComponent(
+          userEmail
+        )}&checkout[custom]=${encodeURIComponent(customNote)}`;
+
+        window.open(lemonUrl, "_blank");
+      }
+    </script>
 
     <% if (currentUser) { %>
     <hr />
@@ -110,11 +239,11 @@
     </div>
     <% } %>
 
-    <hr />
-    <div class="col-8 offset-2 mb-3">
+    <div class="col-8 offset-2 mt-2 mb-3">
       <h3>All Reviews</h3>
       <div class="row">
-        <% for( review of listing.reviews) { %>
+        <% if (listing.reviews.length > 0) { %> <% for (review of
+        listing.reviews) { %>
         <div class="card col-6 mb-3">
           <div class="card-body card-border">
             <b><p class="card-title">@<%= review.author.username %></p></b>
@@ -124,7 +253,7 @@
             ></p>
             <p class="card-text"><%= review.comment %></p>
 
-            <% if(currentUser) { %>
+            <% if (currentUser) { %>
             <form
               action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
               method="post"
@@ -134,8 +263,51 @@
             <% } %>
           </div>
         </div>
+        <% } %> <% } else { %>
+        <p>No reviews yet.</p>
         <% } %>
       </div>
     </div>
+    <div class="col-8 offset-2 mt-2 mb-3">
+      <h3>Location U will be At</h3>
+    </div>
+    <div class="col-8 offset-2 mb-3" id="map"></div>
+
+    <script>
+      const location =
+        "<%= (listing.location || '') + ', ' + (listing.country || 'India') %>";
+
+      async function initLeafletMap() {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+              location
+            )}`
+          );
+          const data = await response.json();
+
+          if (data && data.length > 0) {
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+
+            const map = L.map("map").setView([lat, lon], 13);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              attribution:
+                '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+            }).addTo(map);
+
+            L.marker([lat, lon]).addTo(map).bindPopup(location).openPopup();
+          } else {
+            alert("Could not find the specified location.");
+          }
+        } catch (error) {
+          console.error("Map loading error:", error);
+          alert("Failed to load map.");
+        }
+      }
+
+      initLeafletMap();
+    </script>
   </div>
 </body>
